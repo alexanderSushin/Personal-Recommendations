@@ -23,6 +23,9 @@ def getInfo (name):
 		return None
 	return res[0]
 
+def getInfoById (id):
+	return getReq(f'https://shikimori.one/api/animes/{id}')
+
 def getGenres ():
 	res = getReq('https://shikimori.one/api/genres')
 	if len(res) == 0:
