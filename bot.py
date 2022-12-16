@@ -37,7 +37,14 @@ def sendAnimeInfo(msg, aid):
 	f.close()
 	img = open(path, 'rb')
 	bot.send_chat_action(msg.chat.id, 'upload_photo')
-	caption = f'{anime["russian"]}\nРейтинг: {anime["score"]}/10\nСерий: {anime["episodes"]}'
+	genres = anime["genres"]
+	while len(genres) > 5:
+		genres = genres[:-1]
+	genres_s = ''
+	for genre in genres:
+		genres_s += genre["russian"] + ','
+	desc = anime["description"].split("\n")[0]
+	caption = f'{anime["russian"]}\n**Рейтинг**: {anime["score"]}/10\n**Серий**: {anime["episodes"]}\n**Жанры**: {genres_s[:-1]}\n**Описание**: {desc}'
 	bot.send_photo(msg.chat.id, img, caption=caption)
 
 MAX_PLACE = 300
