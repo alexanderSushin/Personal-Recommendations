@@ -22,3 +22,9 @@ def getInfo (name):
 	if len(res) == 0:
 		return None
 	return res[0]
+
+def getGenres ():
+	res = getReq('https://shikimori.one/api/genres')
+	if len(res) == 0:
+		return None
+	return res
