@@ -16,3 +16,9 @@ def translate (name):
 	if len(res) == 0:
 		return None
 	return res[0]["russian"]
+
+def getInfo (name):
+	res = getReq(f'https://shikimori.one/api/animes/search?q={name}')
+	if len(res) == 0:
+		return None
+	return res[0]
