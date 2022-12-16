@@ -1,4 +1,10 @@
 import telebot
+import random
+from anime_api import getInfoById, root_url
+import urllib
+import os
+
+cur_cnt = 0
 
 def readFileUtf8(name):
 	file = open(name, 'rb')
@@ -18,6 +24,25 @@ def readFile(name):
 		print('ok')
 	return res
 
+def sendAnimeInfo(msg, aid):
+	global cur_cnt
+	anime = getInfoById(aid)
+	url = root_url[:-5] + anime["image"]["original"]
+	print(url)
+	uid = cur_cnt
+	cur_cnt = (cur_cnt + 1) % 10
+	path = f'images/{uid}.jpg'
+	f = open(path, 'wb')
+	f.write(urllib.request.urlopen(url).read())
+	f.close()
+	img = open(path, 'rb')
+	bot.send_chat_action(msg.chat.id, 'upload_photo')
+	caption = f'{anime["russian"]}\nРейтинг: {anime["score"]}/10\nСерий: {anime["episodes"]}'
+	bot.send_photo(msg.chat.id, img, caption=caption)
+
+MAX_PLACE = 300
+animecsv = open('jsons/anime.csv', 'rb').read().decode('ascii',errors='ignore').split('\n')
+print(len(animecsv))
 TOKEN = readFile('token.txt')
 print(TOKEN)
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
@@ -33,7 +58,8 @@ def help (msg):
 
 @bot.message_handler(commands=["random"])
 def randomAnime (msg):
-	bot.send_message(msg.chat.id, funcIsNotWorking)
+	aid = int(animecsv[random.randint(1, MAX_PLACE)].split(',')[0])
+	sendAnimeInfo(msg, aid)
 
 @bot.message_handler(commands=["top_alltime", "top_month", "top_week"])
 def getTopForAll (msg):

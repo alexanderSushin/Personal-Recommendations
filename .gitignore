@@ -1,2 +1,5 @@
 venv
 .idea
+images
+__pycache__
+jsons
