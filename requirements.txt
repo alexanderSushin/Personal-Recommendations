@@ -1,0 +1,6 @@
+numpy
+pandas
+skypy
+pyTelegramBotAPI
+requests
+beautifulsoup4
