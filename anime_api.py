@@ -28,3 +28,21 @@ def getGenres ():
 	if len(res) == 0:
 		return None
 	return res
+
+def getId (name):
+	res = getInfo(name)
+	if len(res) == 0:
+		return None
+	return res["id"]
+
+def getGenre (name):
+	for genre in getGenres():
+		if genre["name"] == name:
+			return genre["russian"]
+	return None
+
+def getGenreEng (name):
+	for genre in getGenres():
+		if genre["russian"] == name:
+			return genre["name"]
+	return None
