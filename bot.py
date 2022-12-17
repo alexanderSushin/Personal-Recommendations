@@ -37,7 +37,7 @@ def delRectBrackets (s):
 	return res.strip()
 
 def getAnimeInfoText(russian, score):
-	return f'{russian} - Рейтинг {score}/10'
+	return f'<b>{russian}</b> - Рейтинг {score}/10'
 
 def getAnimeInfoText2(russian, score):
 	return f'<b>{russian}</b>\nРейтинг: {score}/10'
@@ -108,8 +108,8 @@ def getTopForAll (msg):
 	anime = getTopAllTime(10)
 	res = 'Топ аниме по популярности:\n'
 	for russian, score in anime:
-		res += getAnimeInfoText(russian, score)
-	bot.send_message(msg.chat.id, res)
+		res += getAnimeInfoText2(russian, score) + '\n' * 2
+	bot.send_message(msg.chat.id, res, parse_mode="html")
 
 @bot.message_handler(commands=["top_month"])
 def getTopForMonth (msg):
@@ -117,16 +117,16 @@ def getTopForMonth (msg):
 	print(anime)
 	res = 'Топ аниме по популярности за месяц:\n'
 	for russian, score in anime:
-		res += getAnimeInfoText(russian, score)
-	bot.send_message(msg.chat.id, res)
+		res += getAnimeInfoText2(russian, score) + '\n' * 2
+	bot.send_message(msg.chat.id, res, parse_mode="html")
 
 @bot.message_handler(commands=["top_year"])
 def getTopForYear (msg):
 	anime = getTopThisYear(10)
 	res = 'Топ аниме по популярности за год:\n'
 	for russian, score in anime:
-		res += getAnimeInfoText(russian, score)
-	bot.send_message(msg.chat.id, res)
+		res += getAnimeInfoText2(russian, score) + '\n' * 2
+	bot.send_message(msg.chat.id, res, parse_mode="html")
 
 @bot.message_handler(commands=["personal"])
 def getPersonalAnime (msg):

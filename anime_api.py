@@ -58,7 +58,7 @@ def getGenreEng (name):
 	return None
 
 def getCalendar():
-	calendar = getReq(f'https://shikimori.one/api/calendar')
+	calendar = getReq(f'https://shikimori.one/api/calendar?censored=true')
 	return calendar
 
 def getAllAnons():
