@@ -36,12 +36,14 @@ def getIdOnName (name):
 	if len(res) == 0:
 		return None
 	best = 0
-	print(res[1])
-	for i in range(0, min(len(res), 6)):
+	lev = levenstein(res[0]['russian'], name, 1, 10, 0)
+	# print(res[1])
+	for i in range(1, min(len(res), 6)):
+		cur = levenstein(res[i]['russian'], name, 1, 10, 0)
 		print(res[i]['russian'], levenstein(res[i]['russian'], name, 1, 10, 0))
-		if levenstein(res[best]['russian'], name, 1, 10, 0) > levenstein(res[i]['russian'], name, 1, 10, 0):
+		if lev > cur or (lev == cur and res[i]["score"] > res[best]["score"]):
 			best = i
-	print(res[best]['russian'])
+	# print(res[best]['russian'])
 	return res[best]['id']
 
 def getInfoById (id):
@@ -97,19 +99,18 @@ def getYear():
 def getMonth():
 	return datetime.now().month
 
-def getSeason():
-	month = getMonth()
-	if month == 12 or month == 1 or month == 2:
+def getSeason(month):
+	if month == 1 or month == 2:
 		return 'winter'
 	elif month >= 3 and month <= 5:
 		return 'spring'
 	elif month >= 6 and month <= 8:
 		return 'summer'
 	else:
-		return 'autumn'
+		return 'fall'
 
 def getSeasonRus(month):
-	if month == 12 or month == 1 or month == 2:
+	if month == 1 or month == 2:
 		return 'зима'
 	elif month >= 3 and month <= 5:
 		return 'весна'
@@ -132,7 +133,8 @@ def getTopThisMonth(cntInTop = 10):
 	if cntInTop > 50:
 		return []
 	ans = []
-	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason()}_{getYear()}')
+	month = getMonth()
+	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason(month)}_{getYear()}')
 	for i in res:
 		ans.append([i["russian"], i["score"]])
 	return ans
