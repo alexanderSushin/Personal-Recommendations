@@ -100,7 +100,7 @@ def getTopThisYear(cntInTop = 10):
     ans = []
     res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getYear()}')
     for i in res:
-        ans.append(i["id"])
+        ans.append([i["russian"], i["score"]])
     return ans
 
 
@@ -110,5 +110,5 @@ def getTopThisMonth(cntInTop = 10):
 	ans = []
 	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason()}_{getYear()}')
 	for i in res:
-		ans.append(i["id"])
+		ans.append([i["russian"], i["score"]])
 	return ans

@@ -1,6 +1,6 @@
 import telebot
 import numpy
-from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime
+from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear
 import urllib
 import os
 
@@ -100,11 +100,25 @@ def randomAnime (msg):
 def getTopForAll (msg):
 	anime = getTopAllTime(10)
 	res = 'Топ аниме по популярности:\n'
-	print(anime)
 	for russian, score in anime:
-		# sendAnimeInfo(msg, uid)
 		res += getAnimeInfoText(russian, score)
-	print(res)
+	bot.send_message(msg.chat.id, res)
+
+@bot.message_handler(commands=["top_month"])
+def getTopForMonth (msg):
+	anime = getTopThisMonth(10)
+	print(anime)
+	res = 'Топ аниме по популярности за месяц:\n'
+	for russian, score in anime:
+		res += getAnimeInfoText(russian, score)
+	bot.send_message(msg.chat.id, res)
+
+@bot.message_handler(commands=["top_year"])
+def getTopForYear (msg):
+	anime = getTopThisYear(10)
+	res = 'Топ аниме по популярности за год:\n'
+	for russian, score in anime:
+		res += getAnimeInfoText(russian, score)
 	bot.send_message(msg.chat.id, res)
 
 @bot.message_handler(commands=["personal"])
