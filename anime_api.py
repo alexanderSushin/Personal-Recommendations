@@ -2,6 +2,7 @@
 import requests
 import json
 from datetime import datetime
+from utils import levenstein
 
 root_url = 'http://shikimori.one/api/'
 
@@ -29,6 +30,19 @@ def getInfo (name):
 	if len(res) == 0:
 		return None
 	return res[0]
+
+def getIdOnName (name):
+	res = getReq(f'https://shikimori.one/api/animes/search?q={name}')
+	if len(res) == 0:
+		return None
+	best = 0
+	print(res[1])
+	for i in range(0, min(len(res), 6)):
+		print(res[i]['russian'], levenstein(res[i]['russian'], name, 1, 10, 0))
+		if levenstein(res[best]['russian'], name, 1, 10, 0) > levenstein(res[i]['russian'], name, 1, 10, 0):
+			best = i
+	print(res[best]['russian'])
+	return res[best]['id']
 
 def getInfoById (id):
 	return getReq(f'https://shikimori.one/api/animes/{id}')
