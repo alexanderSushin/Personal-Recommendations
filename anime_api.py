@@ -36,12 +36,14 @@ def getIdOnName (name):
 	if len(res) == 0:
 		return None
 	best = 0
-	print(res[1])
-	for i in range(0, min(len(res), 6)):
+	lev = levenstein(res[0]['russian'], name, 1, 10, 0)
+	# print(res[1])
+	for i in range(1, min(len(res), 6)):
+		cur = levenstein(res[i]['russian'], name, 1, 10, 0)
 		print(res[i]['russian'], levenstein(res[i]['russian'], name, 1, 10, 0))
-		if levenstein(res[best]['russian'], name, 1, 10, 0) > levenstein(res[i]['russian'], name, 1, 10, 0):
+		if lev > cur or (lev == cur and res[i]["score"] > res[best]["score"]):
 			best = i
-	print(res[best]['russian'])
+	# print(res[best]['russian'])
 	return res[best]['id']
 
 def getInfoById (id):
