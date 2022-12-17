@@ -55,3 +55,15 @@ def getGenreEng (name):
 		if genre["russian"] == name:
 			return genre["name"]
 	return None
+
+def getCalendar():
+	calendar = getReq(f'https://shikimori.one/api/calendar')
+	return calendar
+
+def getAllAnons():
+	calendar = getCalendar()
+	ans = []
+	for elem in calendar:
+		ans.append([elem["anime"]["id"], elem["next_episode_at"], elem["next_episode"]])
+	for i in ans:
+		print(i)
