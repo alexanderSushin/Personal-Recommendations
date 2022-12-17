@@ -1,6 +1,6 @@
 import telebot
 import numpy
-from anime_api import getInfoById, root_url, getAnimeList
+from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime
 import urllib
 import os
 
@@ -35,6 +35,9 @@ def delRectBrackets (s):
 		elif bal == 0:
 			res += i
 	return res.strip()
+
+def getAnimeInfoText(aid):
+	pass
 
 def sendAnimeInfo(msg, aid):
 	global cur_cnt
@@ -96,7 +99,14 @@ def randomAnime (msg):
 @bot.message_handler(commands=["top_alltime", "top_month", "top_week"])
 def getTopForAll (msg):
 	timeGot = msg.text
-	bot.send_message(msg.chat.id, f'Данная функция сейчас недоступна, вы выбрали {timeGot}')
+	if timeGot == "/top_alltime":
+		anime = getTopForAll(10)
+		res = ''
+		for uid in anime:
+			res += getAnimeInfoText(uid)
+		bot.send_message(msg.char.id, res, parse_mode="html")
+	else:
+		bot.send_message(msg.chat.id, f'Данная функция сейчас недоступна, вы выбрали {timeGot}')
 
 @bot.message_handler(commands=["personal"])
 def getPersonalAnime (msg):
