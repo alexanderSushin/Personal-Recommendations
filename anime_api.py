@@ -65,7 +65,7 @@ def getAllAnons():
 	calendar = getCalendar()
 	ans = []
 	for elem in calendar:
-		ans.append([elem["anime"]["id"], elem["next_episode_at"], elem["next_episode"]])
+		ans.append([elem["anime"]["id"], elem["next_episode_at"], elem["next_episode"], elem["anime"]["russian"], elem["anime"]["score"]])
 	return ans
 
 def getTopAllTime(cntInTop = 10):
@@ -93,6 +93,16 @@ def getSeason():
 		return 'summer'
 	else:
 		return 'autumn'
+
+def getSeasonRus(month):
+	if month == 12 or month == 1 or month == 2:
+		return 'зима'
+	elif month >= 3 and month <= 5:
+		return 'весна'
+	elif month >= 6 and month <= 8:
+		return 'лето'
+	else:
+		return 'осень'
 
 def getTopThisYear(cntInTop = 10):
     if cntInTop > 50:

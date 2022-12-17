@@ -1,6 +1,6 @@
 import telebot
 import numpy
-from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear
+from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus
 import urllib
 import os
 
@@ -37,7 +37,14 @@ def delRectBrackets (s):
 	return res.strip()
 
 def getAnimeInfoText(russian, score):
-	return f'{russian} - Рейтинг {score}\n'
+	return f'{russian} - Рейтинг {score}/10'
+
+def getAnimeInfoText2(russian, score):
+	return f'<b>{russian}</b>\nРейтинг: {score}/10'
+
+def getAnimeInfoTextById(uid):
+	anime = getInfoById(uid)
+	return f"{anime['russian']} - Рейтинг {anime['score']}/10"
 
 def sendAnimeInfo(msg, aid):
 	global cur_cnt
@@ -136,6 +143,25 @@ def removeFriend (msg):
 @bot.message_handler(commands=["watched"])
 def watchedAnime (msg):
 	bot.send_message(msg.chat.id, funcIsNotWorking)
+
+@bot.message_handler(commands=["get_all_anons"])
+def anonsAnime (msg):
+	anons = getAllAnons()
+	cnt = 0
+	res = 'Свежие анонсы аниме:\n'
+	for elem in anons:
+		if float(elem[4]) < 8:
+			continue
+		dat = elem[1].split('T')[0]
+		month = dat.split('-')[1]
+		year = dat.split('-')[0]
+		cnt += 1
+		res += getAnimeInfoText2(elem[3], elem[4])
+		res += f"\nДата выхода: {'.'.join(dat.split('-')[::-1])}\n\n"
+		if cnt >= 10:
+			break
+	print(res)
+	bot.send_message(msg.chat.id, res, parse_mode="html")
 
 if __name__ == "__main__":
 	bot.infinity_polling()
