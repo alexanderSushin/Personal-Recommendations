@@ -1,6 +1,7 @@
 # uses shikimory.one
 import requests
 import json
+from datetime import datetime
 
 root_url = 'http://shikimori.one/api/'
 
@@ -75,3 +76,39 @@ def getTopAllTime(cntInTop = 10):
     for i in res:
         ans.append(i["id"])
     return ans
+
+def getYear():
+	return datetime.now().year
+
+def getMonth():
+	return datetime.now().month
+
+def getSeason():
+	month = getMonth()
+	if month == 12 or month == 1 or month == 2:
+		return 'winter'
+	elif month >= 3 and month <= 5:
+		return 'spring'
+	elif month >= 6 and month <= 8:
+		return 'summer'
+	else:
+		return 'autumn'
+
+def getTopThisYear(cntInTop = 10):
+    if cntInTop > 50:
+        return []
+    ans = []
+    res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getYear()}')
+    for i in res:
+        ans.append(i["id"])
+    return ans
+
+
+def getTopThisMonth(cntInTop = 10):
+	if cntInTop > 50:
+		return []
+	ans = []
+	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason()}_{getYear()}')
+	for i in res:
+		ans.append(i["id"])
+	return ans
