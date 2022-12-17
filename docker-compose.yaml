@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - default
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  bot:
+    image: {TAG_COMMIT}
+    env_file: .env
+    restart: always
+    networks:
+      - default
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://<user>:<password>@<host>:<port>/<db>?sslmode=disable", "up"]
+    links: 
+      - database
+    depends_on:
+      - database
+    networks:
+      - default
+
+networks:
+  default: 
