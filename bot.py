@@ -1,6 +1,6 @@
 import telebot
-import random
-from anime_api import getInfoById, root_url
+import numpy
+from anime_api import getInfoById, root_url, getAnimeList
 import urllib
 import os
 
@@ -59,6 +59,19 @@ def sendAnimeInfo(msg, aid):
 	caption = f'{anime["russian"]}\n<b>Рейтинг</b>: {anime["score"]}/10\n<b>Cерий</b>: {anime["episodes"]}\n\n<b>Жанры</b>: {genres_s[:-2]}\n\n<b>Описание</b>: {desc}'
 	bot.send_photo(msg.chat.id, img, caption=caption, parse_mode="html")
 
+def wrand (a, b, c):
+	d = numpy.random.randint(a, b)
+	for i in range(c - 1):
+		d = min(d, numpy.random.randint(a, b))
+	return d
+
+def getRandomAnime ():
+	uid = wrand(1, MAX_PLACE, 3)
+	anime = getAnimeList(1, uid, "popularity")
+	if not anime:
+		return None
+	return anime[0]["id"]
+
 MAX_PLACE = 300
 animecsv = open('jsons/anime.csv', 'rb').read().decode('ascii',errors='ignore').split('\n')
 print(len(animecsv))
@@ -77,7 +90,7 @@ def help (msg):
 
 @bot.message_handler(commands=["random"])
 def randomAnime (msg):
-	aid = int(animecsv[random.randint(1, MAX_PLACE)].split(',')[0])
+	aid = getRandomAnime()
 	sendAnimeInfo(msg, aid)
 
 @bot.message_handler(commands=["top_alltime", "top_month", "top_week"])

@@ -17,6 +17,12 @@ def translate (name):
 		return None
 	return res[0]["russian"]
 
+def getAnimeList (limit, page, order):
+	res = getReq(f'https://shikimori.one/api/animes?limit={limit}&order={order}&page={page}')
+	if len(res) == 0:
+		return None
+	return res
+
 def getInfo (name):
 	res = getReq(f'https://shikimori.one/api/animes/search?q={name}')
 	if len(res) == 0:
