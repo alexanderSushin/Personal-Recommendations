@@ -36,8 +36,8 @@ def delRectBrackets (s):
 			res += i
 	return res.strip()
 
-def getAnimeInfoText(aid):
-	pass
+def getAnimeInfoText(russian, score):
+	return f'{russian} - Рейтинг {score}\n'
 
 def sendAnimeInfo(msg, aid):
 	global cur_cnt
@@ -96,17 +96,16 @@ def randomAnime (msg):
 	aid = getRandomAnime()
 	sendAnimeInfo(msg, aid)
 
-@bot.message_handler(commands=["top_alltime", "top_month", "top_week"])
+@bot.message_handler(commands=["top_alltime"])
 def getTopForAll (msg):
-	timeGot = msg.text
-	if timeGot == "/top_alltime":
-		anime = getTopForAll(10)
-		res = ''
-		for uid in anime:
-			res += getAnimeInfoText(uid)
-		bot.send_message(msg.char.id, res, parse_mode="html")
-	else:
-		bot.send_message(msg.chat.id, f'Данная функция сейчас недоступна, вы выбрали {timeGot}')
+	anime = getTopAllTime(10)
+	res = 'Топ аниме по популярности:\n'
+	print(anime)
+	for russian, score in anime:
+		# sendAnimeInfo(msg, uid)
+		res += getAnimeInfoText(russian, score)
+	print(res)
+	bot.send_message(msg.chat.id, res)
 
 @bot.message_handler(commands=["personal"])
 def getPersonalAnime (msg):
