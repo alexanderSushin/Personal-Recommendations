@@ -24,6 +24,18 @@ def readFile(name):
 		print('ok')
 	return res
 
+def delRectBrackets (s):
+	bal = 0
+	res = ''
+	for i in s:
+		if i == '[' or i == '(' or i == '{':
+			bal += 1
+		elif i == ']' or i == ')' or i == '}':
+			bal -= 1
+		elif bal == 0:
+			res += i
+	return res.strip()
+
 def sendAnimeInfo(msg, aid):
 	global cur_cnt
 	anime = getInfoById(aid)
@@ -42,10 +54,10 @@ def sendAnimeInfo(msg, aid):
 		genres = genres[:-1]
 	genres_s = ''
 	for genre in genres:
-		genres_s += genre["russian"] + ','
-	desc = anime["description"].split("\n")[0]
-	caption = f'{anime["russian"]}\n**Рейтинг**: {anime["score"]}/10\n**Серий**: {anime["episodes"]}\n**Жанры**: {genres_s[:-1]}\n**Описание**: {desc}'
-	bot.send_photo(msg.chat.id, img, caption=caption)
+		genres_s += genre["russian"] + ', '
+	desc = delRectBrackets(anime["description"].split("\n")[0])
+	caption = f'{anime["russian"]}\n<b>Рейтинг</b>: {anime["score"]}/10\n<b>Cерий</b>: {anime["episodes"]}\n\n<b>Жанры</b>: {genres_s[:-2]}\n\n<b>Описание</b>: {desc}'
+	bot.send_photo(msg.chat.id, img, caption=caption, parse_mode="html")
 
 MAX_PLACE = 300
 animecsv = open('jsons/anime.csv', 'rb').read().decode('ascii',errors='ignore').split('\n')
