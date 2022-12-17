@@ -65,8 +65,7 @@ def getAllAnons():
 	ans = []
 	for elem in calendar:
 		ans.append([elem["anime"]["id"], elem["next_episode_at"], elem["next_episode"]])
-	for i in ans:
-		print(i)
+	return ans
 
 def getTopAllTime(cntInTop = 10):
     if cntInTop > 50:
