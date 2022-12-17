@@ -1,7 +1,7 @@
 create table if not exists "users" (
   "id" bigserial PRIMARY KEY,
-  "telegram_id" bigint unique,
-  "telegram_chat_id" bigint unique,
+  "telegram_id" bigint not null unique,
+  "telegram_chat_id" bigint not null unique,
   "created_at" timestamp default now(),
   "is_deleted" boolean default false
 );
