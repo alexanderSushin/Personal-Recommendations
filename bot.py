@@ -1,6 +1,6 @@
 import telebot
 import numpy
-from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus
+from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus, getIdOnName
 import urllib
 import os
 
@@ -162,6 +162,21 @@ def anonsAnime (msg):
 			break
 	print(res)
 	bot.send_message(msg.chat.id, res, parse_mode="html")
+
+def process_describe_name (msg):
+	try:
+		name = msg.text
+		aid = getIdOnName(name)
+		if not aid:
+			print(1 / 0)
+		sendAnimeInfo(msg, aid)
+	except:
+		bot.reply_to(msg, 'Ни одного аниме с похожим названием не найдено.')
+
+@bot.message_handler(commands=["describe"])
+def describe(msg):
+	bot.send_message(msg.chat.id, f'Введите название аниме, которое хотите узнать:')
+	bot.register_next_step_handler(msg, process_describe_name)
 
 if __name__ == "__main__":
 	bot.infinity_polling()

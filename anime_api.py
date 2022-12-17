@@ -97,19 +97,18 @@ def getYear():
 def getMonth():
 	return datetime.now().month
 
-def getSeason():
-	month = getMonth()
-	if month == 12 or month == 1 or month == 2:
+def getSeason(month):
+	if month == 1 or month == 2:
 		return 'winter'
 	elif month >= 3 and month <= 5:
 		return 'spring'
 	elif month >= 6 and month <= 8:
 		return 'summer'
 	else:
-		return 'autumn'
+		return 'fall'
 
 def getSeasonRus(month):
-	if month == 12 or month == 1 or month == 2:
+	if month == 1 or month == 2:
 		return 'зима'
 	elif month >= 3 and month <= 5:
 		return 'весна'
@@ -132,7 +131,8 @@ def getTopThisMonth(cntInTop = 10):
 	if cntInTop > 50:
 		return []
 	ans = []
-	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason()}_{getYear()}')
+	month = getMonth()
+	res = getReq(f'https://shikimori.one/api/animes?limit={cntInTop}&order=ranked&page=1&season={getSeason(month)}_{getYear()}')
 	for i in res:
 		ans.append([i["russian"], i["score"]])
 	return ans
