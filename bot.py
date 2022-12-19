@@ -2,6 +2,7 @@ import telebot
 import numpy
 from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus, getIdOnName
 import urllib
+from utils import reduceText
 import os
 
 cur_cnt = 0
@@ -65,7 +66,9 @@ def sendAnimeInfo(msg, aid):
 	genres_s = ''
 	for genre in genres:
 		genres_s += genre["russian"] + ', '
-	desc = delRectBrackets(anime["description"].split("\n")[0])
+	desc = ''
+	if anime['description']:
+		desc = reduceText(delRectBrackets(anime["description"].split("\n")[0]))
 	caption = f'{anime["russian"]}\n<b>Рейтинг</b>: {anime["score"]}/10\n<b>Cерий</b>: {anime["episodes"]}\n\n<b>Жанры</b>: {genres_s[:-2]}\n\n<b>Описание</b>: {desc}'
 	bot.send_photo(msg.chat.id, img, caption=caption, parse_mode="html")
 
@@ -166,12 +169,14 @@ def anonsAnime (msg):
 def process_describe_name (msg):
 	try:
 		name = msg.text
+		print(msg.from_user.username, msg.from_user.first_name, msg.from_user.last_name, name)	
 		aid = getIdOnName(name)
 		if not aid:
 			print(1 / 0)
 		sendAnimeInfo(msg, aid)
-	except:
+	except Exception as e:
 		bot.reply_to(msg, 'Ни одного аниме с похожим названием не найдено.')
+		print(e)
 
 @bot.message_handler(commands=["describe"])
 def describe(msg):

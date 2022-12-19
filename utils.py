@@ -1,3 +1,4 @@
+
 def levenstein(str_1, str_2, w_add = 1, w_change = 1, w_del = 1):
     str_1 = str_1.lower()
     str_2 = str_2.lower()
@@ -13,3 +14,12 @@ def levenstein(str_1, str_2, w_add = 1, w_change = 1, w_del = 1):
             current_row[j] = min(add, delete, change)
 
     return current_row[n]
+
+
+def reduceText(text):
+    while (len(text) > 500):
+        ptr = len(text) - 2
+        while text[ptr] != '.':
+            ptr -= 1
+        text = text[:ptr + 1]
+    return text

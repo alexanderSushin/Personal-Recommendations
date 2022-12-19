@@ -31,20 +31,35 @@ def getInfo (name):
 		return None
 	return res[0]
 
+def distNames(api, name):
+	return (1 + levenstein(api['russian'], name, 5, 10, 0)) * (10 - float(api['score']))
+
+
 def getIdOnName (name):
-	res = getReq(f'https://shikimori.one/api/animes/search?q={name}')
-	if len(res) == 0:
+	best_api, lev = 228, 2020202020
+	any_api = False
+	all_api = getReq(f'https://shikimori.one/api/animes/search?q={name}')
+	for i in range(min(len(all_api), 10)):
+		cur_lev = distNames(all_api[i], name)
+		print(all_api[i]['russian'], cur_lev)
+		any_api = True
+		if lev > cur_lev or (lev == cur_lev and all_api[i]['score'] > best_api['score']):
+			lev = cur_lev
+			best_api = all_api[i]
+	name_split = name.split()
+	for word in name_split:
+		all_api = getReq(f'https://shikimori.one/api/animes/search?q={word}')
+		for i in range(min(len(all_api), 10)):
+			any_api = True
+			cur_lev = distNames(all_api[i], name)
+			print(all_api[i]['russian'], cur_lev)
+			if lev > cur_lev or (lev == cur_lev and all_api[i]['score'] > best_api['score']):
+				lev = cur_lev
+				best_api = all_api[i]
+	if not any_api:
 		return None
-	best = 0
-	lev = levenstein(res[0]['russian'], name, 1, 10, 0)
-	# print(res[1])
-	for i in range(1, min(len(res), 6)):
-		cur = levenstein(res[i]['russian'], name, 1, 10, 0)
-		print(res[i]['russian'], levenstein(res[i]['russian'], name, 1, 10, 0))
-		if lev > cur or (lev == cur and res[i]["score"] > res[best]["score"]):
-			best = i
-	# print(res[best]['russian'])
-	return res[best]['id']
+	print(best_api['russian'])
+	return best_api['id']
 
 def getInfoById (id):
 	return getReq(f'https://shikimori.one/api/animes/{id}')
