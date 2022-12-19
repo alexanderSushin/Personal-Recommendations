@@ -4,6 +4,7 @@ from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTop
 import urllib
 from utils import reduceText
 import os
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 cur_cnt = 0
 
@@ -47,29 +48,35 @@ def getAnimeInfoTextById(uid):
 	anime = getInfoById(uid)
 	return f"{anime['russian']} - Рейтинг {anime['score']}/10"
 
-def sendAnimeInfo(msg, aid):
+def downloadAnimePhoto (link):
 	global cur_cnt
-	anime = getInfoById(aid)
-	url = root_url[:-5] + anime["image"]["original"]
-	print(url)
+	url = root_url[:-5] + link
 	uid = cur_cnt
 	cur_cnt = (cur_cnt + 1) % 10
 	path = f'images/{uid}.jpg'
 	f = open(path, 'wb')
 	f.write(urllib.request.urlopen(url).read())
 	f.close()
-	img = open(path, 'rb')
-	bot.send_chat_action(msg.chat.id, 'upload_photo')
-	genres = anime["genres"]
+	return path
+
+def parseAnimeGenres (genres):
 	while len(genres) > 5:
 		genres = genres[:-1]
 	genres_s = ''
 	for genre in genres:
 		genres_s += genre["russian"] + ', '
+	return genres_s[:-2]
+
+def sendAnimeInfo(msg, aid):
+	anime = getInfoById(aid)
+	path = downloadAnimePhoto(anime["image"]["original"])
+	img = open(path, 'rb')
+	bot.send_chat_action(msg.chat.id, 'upload_photo')
+	genres = parseAnimeGenres(anime["genres"])
 	desc = ''
 	if anime['description']:
 		desc = reduceText(delRectBrackets(anime["description"].split("\n")[0]))
-	caption = f'{anime["russian"]}\n<b>Рейтинг</b>: {anime["score"]}/10\n<b>Cерий</b>: {anime["episodes"]}\n\n<b>Жанры</b>: {genres_s[:-2]}\n\n<b>Описание</b>: {desc}'
+	caption = f'{anime["russian"]}\n<b>Рейтинг</b>: {anime["score"]}/10\n<b>Cерий</b>: {anime["episodes"]}\n\n<b>Жанры</b>: {genres}\n\n<b>Описание</b>: {desc}'
 	bot.send_photo(msg.chat.id, img, caption=caption, parse_mode="html")
 
 def wrand (a, b, c):
@@ -84,6 +91,27 @@ def getRandomAnime ():
 	if not anime:
 		return None
 	return anime[0]["id"]
+
+def genMarkup (aid):
+	markup = InlineKeyboardMarkup()
+	markup.row_width = 3
+	for x in range(3):
+		tmp = []
+		for j in range(x * 3 + 1, (x + 1) * 3 + 1):
+			tmp.append(InlineKeyboardButton(str(j), callback_data=f"rate_{aid}_{j}"))
+		markup.add(tmp)
+	markup.add(InlineKeyboardButton('Не помню', callback_data=f"rate_{aid}_not"), 
+		InlineKeyboardButton('10', callback_data=f"rate_{aid}_10"), 
+		InlineKeyboardButton('Не смотрел', callback_data=f"rate_{aid}_not"))
+	return markup
+
+def rateAnime (msg, aid):
+	anime = getInfoById(aid)
+	path = downloadAnimePhoto(anime["image"]["original"])
+	img = open(path, 'rb')
+	bot.send_chat_action(msg.chat.id, "upload_photo")
+	caption = f'<b>{anime["russian"]}</b>\n\n Как бы вы оценили данное аниме?'
+	bot.send_photo(msg.chat.id, img, caption=caption, parse_mode="html", reply_markup=genMarkup(aid))
 
 MAX_PLACE = 300
 animecsv = open('jsons/anime.csv', 'rb').read().decode('ascii',errors='ignore').split('\n')
@@ -145,7 +173,20 @@ def removeFriend (msg):
 
 @bot.message_handler(commands=["watched"])
 def watchedAnime (msg):
-	bot.send_message(msg.chat.id, funcIsNotWorking)
+	bot.send_message(msg.chat.id, 'Введите название аниме, которе посмотрели:')
+	bot.register_next_step_handler(msg, process_watched_name)
+
+def process_watched_name (msg):
+	try:
+		name = msg.text
+		print(msg.from_user.username, msg.from_user.first_name, msg.from_user.last_name, name)	
+		aid = getIdOnName(name)
+		if not aid:
+			print(1 / 0)
+		rateAnime(msg, aid)
+	except Exception as e:
+		bot.reply_to(msg, 'Ни одного аниме с похожим названием не найдено.')
+		print(e)
 
 @bot.message_handler(commands=["get_all_anons"])
 def anonsAnime (msg):
