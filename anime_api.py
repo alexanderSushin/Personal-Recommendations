@@ -38,7 +38,7 @@ def distNames(api, name):
 def getIdOnName (name):
 	best_api, lev = 228, 2020202020
 	any_api = False
-	all_api = getReq(f'https://shikimori.one/api/animes/search?q={name}')
+	all_api = getReq(f'https://shikimori.one/api/animes/search?q={name}&limit=50')
 	for i in range(min(len(all_api), 10)):
 		cur_lev = distNames(all_api[i], name)
 		print(all_api[i]['russian'], cur_lev)

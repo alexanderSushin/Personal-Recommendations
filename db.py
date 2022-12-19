@@ -1,4 +1,4 @@
-import psycopg2
+from psycopg2 import connect, sql
 from dotenv import load_dotenv
 import os
 
@@ -9,4 +9,5 @@ if os.path.exists(dotenv_path):
 	load_dotenv(dotenv_path)
 
 conn = psycopg2.connect(dbname=os.environ.get("POSTGRES_DB"), user=os.environ.get("POSTGRES_USER"), 
-	password=os.environ.get("maindb"), host="localhost")
+	password=os.environ.get("POSTGRES_PASSWORD"), host="localhost")
+
