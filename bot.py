@@ -96,10 +96,9 @@ def genMarkup (aid):
 	markup = InlineKeyboardMarkup()
 	markup.row_width = 3
 	for x in range(3):
-		tmp = []
-		for j in range(x * 3 + 1, (x + 1) * 3 + 1):
-			tmp.append(InlineKeyboardButton(str(j), callback_data=f"rate_{aid}_{j}"))
-		markup.add(tmp)
+		markup.add(InlineKeyboardButton(str(x * 3 + 1), callback_data=f"rate_{aid}_{x * 3 + 1}"), 
+		InlineKeyboardButton(str(x * 3 + 2), callback_data=f"rate_{aid}_{x * 3 + 2}"), 
+		InlineKeyboardButton(str(x * 3 + 3), callback_data=f"rate_{aid}_{x * 3 + 3}"))
 	markup.add(InlineKeyboardButton('Не помню', callback_data=f"rate_{aid}_not"), 
 		InlineKeyboardButton('10', callback_data=f"rate_{aid}_10"), 
 		InlineKeyboardButton('Не смотрел', callback_data=f"rate_{aid}_not"))
@@ -187,6 +186,17 @@ def process_watched_name (msg):
 	except Exception as e:
 		bot.reply_to(msg, 'Ни одного аниме с похожим названием не найдено.')
 		print(e)
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+	text = call.data
+	if text[:4] == "rate":
+		last = text.split('_')[-1]
+		if last == 'not':
+			bot.answer_callback_query(call.id, 'Вы не смотрели это')
+		else:
+			bot.answer_callback_query(call.id, f'Вы оценили это на {last}/10')
+
+
 
 @bot.message_handler(commands=["get_all_anons"])
 def anonsAnime (msg):
