@@ -5,7 +5,13 @@ import urllib
 from utils import reduceText
 import os
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from dotenv import load_dotenv
 
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env.local')
+if os.path.exists(dotenv_path):
+	print('loaded')
+	load_dotenv(dotenv_path)
 cur_cnt = 0
 
 def readFileUtf8(name):
@@ -115,8 +121,7 @@ def rateAnime (msg, aid):
 MAX_PLACE = 300
 animecsv = open('jsons/anime.csv', 'rb').read().decode('ascii',errors='ignore').split('\n')
 print(len(animecsv))
-TOKEN = readFile('token.txt')
-print(TOKEN)
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 funcIsNotWorking = 'Сейчас эта функция недоступна'
 
