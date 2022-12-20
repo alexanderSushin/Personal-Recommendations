@@ -3,6 +3,7 @@ import requests
 import json
 from datetime import datetime
 from utils import levenstein
+from bs4 import BeautifulSoup
 
 root_url = 'http://shikimori.one/api/'
 
