@@ -5,7 +5,7 @@ create table if not exists "genres" (
     "name"      text        not null,
     "russian"   text        not null,
     "kind"      text        not null
-)
+);
 
 create table if not exists "anime_list" (
     "id"            bigserial   PRIMARY KEY,
@@ -21,7 +21,7 @@ create table if not exists "anime_list" (
     "description"   text        not null,
     "image_url"     text        not null,
     "genres"        int[]       not null default '{}'
-) 
+);
 
 create table if not exists "evaluations" (
     "user_id"       bigint      not null,
