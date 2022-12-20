@@ -153,3 +153,18 @@ def getTopThisMonth(cntInTop = 10):
 	for i in res:
 		ans.append([i["russian"], i["score"]])
 	return ans
+
+def getIdOnUserName(username):
+    r = getReq(f'https://shikimori.one/{username}')
+    soup = BeautifulSoup(r.text, "html.parser")
+    lst = soup.findAll('section', class_='l-page')
+    if len(lst) == 0:
+        return None
+    need = (str(lst[0]).split('data-user-id'))[1]
+    id = ''
+    for i in range(2, len(need)):
+        if need[i].isdigit():
+            id += need[i]
+        else:
+            break
+    return int(id)
