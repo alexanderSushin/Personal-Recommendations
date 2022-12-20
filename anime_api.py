@@ -14,6 +14,10 @@ s.headers.update(headers)
 def getReq (url):
 	return s.get(url).json()
 
+
+def getReqAll(url):
+	return s.get(url)
+
 def translate (name):
 	res = getReq(f'https://shikimori.one/api/animes/search?q={name}')
 	if len(res) == 0:
@@ -156,7 +160,7 @@ def getTopThisMonth(cntInTop = 10):
 	return ans
 
 def getIdOnUserName(username):
-    r = getReq(f'https://shikimori.one/{username}')
+    r = getReqAll(f'https://shikimori.one/{username}')
     soup = BeautifulSoup(r.text, "html.parser")
     lst = soup.findAll('section', class_='l-page')
     if len(lst) == 0:
