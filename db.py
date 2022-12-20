@@ -2,6 +2,8 @@ from psycopg2 import connect, sql
 from dotenv import load_dotenv
 import os
 from user import User
+from anime import Anime
+from genre import Genre
 
 main_file = (__name__ == "__main__")
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env.local')
@@ -38,6 +40,35 @@ def getUserByTid (telegram_id: int) -> User:
 
 def updateLogin (user: User):
 	cur.execute('UPDATE users SET shikimori=%s WHERE id=%s', [user.login, user.id])
+	conn.commit()
+
+def getAnimeById (anime_id: int) -> Anime:
+	cur.execute('SELECT * FROM anime_list WHERE id=%s;', [anime_id])
+	res = cur.fetchone()
+	return Anime(res)
+
+def getAnimeBySid (anime_id: int) -> Anime:
+	cur.execute('SELECT * FROM anime_list WHERE shikimory_id=%s;', [anime_id])
+	res = cur.fetchone()
+	return Anime(res)
+
+def getGenreByName (name: str) -> Genre:
+	cur.execute('SELECT * FROM genres WHERE name=%s;', [name])
+	res = cur.fetchone()
+	return Genre(res)
+
+def getGenreByRussian (name: str) -> Genre:
+	cur.execute('SELECT * FROM genres WHERE russian=%s;', [name])
+	res = cur.fetchone()
+	return Genre(res)
+
+def getGenreById (id: int) -> Genre:
+	cur.execute('SELECT * FROM genres WHERE id=%s;', [id])
+	res = cur.fetchone()
+	return Genre(res)
+
+def insertAnime (anime: Anime):
+	cur.execute('INSERT INTO anime_list (shikimory_id, name, russian, url, status, score, episodes, year, rating, description, image_url, genres) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', anime.exportInsert())
 	conn.commit()
 
 if main_file:
