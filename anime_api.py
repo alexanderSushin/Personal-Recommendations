@@ -168,3 +168,11 @@ def getIdOnUserName(username):
         else:
             break
     return int(id)
+
+
+def getAnimeRatesById(user_id):
+	res = getReq(f'https://shikimori.one/api/v2/user_rates?user_id={user_id}')
+	arr = []
+	for item in res:
+		arr.append((item["target_id"], item["score"]))
+	return arr
