@@ -10,15 +10,19 @@ if os.path.exists(dotenv_path):
 
 conn = connect(dbname=os.environ.get("POSTGRES_DB"), user=os.environ.get("POSTGRES_USER"), 
 	password=os.environ.get("POSTGRES_PASSWORD"), host="localhost")
-cur = conn.cursor()
 
 print('connection successfull')
 
-def getUserById (user_id):
-	cur.execute('SELECT * FROM users WHERE id=%s;', [user_id])
-	res = cur.fetchone()
+def migrate (filname):
+	cur = conn.cursor()
+	migration = open(filname, 'r')
+	cur.execute(migration.read())
+	migration.close()
 	conn.commit()
-	return res
+	cur.close()
 
-print(getUser(1))
-conn.close()
+
+for migration in os.listdir('migrations'):
+	migrate(os.path.join(os.path.dirname(__file__), 'migrations', migration))
+
+print('migrations commited.')
