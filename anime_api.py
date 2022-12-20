@@ -181,3 +181,23 @@ def getAnimeRatesById(user_id):
 	for item in res:
 		arr.append((item["target_id"], item["score"]))
 	return arr
+
+def getGoodAnimeRatesById(user_id):
+    anime_list = dict()
+    with open("normal_list.txt", "r") as file:
+        all_animes = file.readline()
+        anime_now = ""
+        for char in all_animes:
+            if (char == "," or char == " "):
+                if char == ",":
+                    anime_list[anime_now] = True
+                anime_now = ""
+            else:
+                anime_now += char
+        anime_list[anime_now] = True
+    res = getAnimeRatesById(user_id)
+    arr = []
+    for item in res:
+        if item[0] in anime_list:
+            arr.append(item)
+    return arr
