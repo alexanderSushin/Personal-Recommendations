@@ -8,6 +8,6 @@ if os.path.exists(dotenv_path):
 		print('loaded')
 	load_dotenv(dotenv_path)
 
-conn = psycopg2.connect(dbname=os.environ.get("POSTGRES_DB"), user=os.environ.get("POSTGRES_USER"), 
+conn = connect(dbname=os.environ.get("POSTGRES_DB"), user=os.environ.get("POSTGRES_USER"), 
 	password=os.environ.get("POSTGRES_PASSWORD"), host="localhost")
 
