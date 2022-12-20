@@ -24,7 +24,7 @@ services:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
-    command: ["-path", "/migrations", "-database", "postgres://<user>:<password>@<host>:<port>/<db>?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database", "postgres://animebot_user:IetooyahSee1oZea5eiwohjohrahf5ieLa7Vah0xohbufee6@localhost:5432/animebot?sslmode=disable", "up"]
     links: 
       - database
     depends_on:
