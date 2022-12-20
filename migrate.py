@@ -1,5 +1,6 @@
 from psycopg2 import connect, sql
 from dotenv import load_dotenv
+from utils import clearNonAscii
 import os
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env.local')
@@ -15,8 +16,8 @@ print('connection successfull')
 
 def migrate (filname):
 	cur = conn.cursor()
-	migration = open(filname, 'r')
-	cur.execute(migration.read())
+	migration = open(filname, 'rb')
+	cur.execute(clearNonAscii(migration.read()))
 	migration.close()
 	conn.commit()
 	cur.close()

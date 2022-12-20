@@ -1,3 +1,5 @@
+def clearNonAscii(s):
+    return s.decode('ascii', errors='ignore')
 
 def levenstein(str_1, str_2, w_add = 1, w_change = 1, w_del = 1):
     str_1 = str_1.lower()
