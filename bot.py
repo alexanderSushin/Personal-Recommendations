@@ -1,6 +1,6 @@
 import telebot
 import numpy
-from anime_api import getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus, getIdOnName
+from anime_api import getIdOnUserName, getInfoById, root_url, getAnimeList, getTopAllTime, getTopThisMonth, getTopThisYear, getAllAnons, getSeasonRus, getIdOnName
 import urllib
 from utils import reduceText
 import os
@@ -239,6 +239,27 @@ def process_describe_name (msg):
 def describe(msg):
 	bot.send_message(msg.chat.id, f'Введите название аниме, которое хотите узнать:')
 	bot.register_next_step_handler(msg, process_describe_name)
+
+
+def process_link_shikimori (msg):
+	try:
+		name = msg.text
+		aid = getIdOnUserName(name)
+		if not aid:
+			print(1 / 0)
+		# DO SOMETHING PLEASE
+		# DO SOMETHING PLEASE
+		# DO SOMETHING PLEASE
+		# DO SOMETHING PLEASE
+		# DO SOMETHING PLEASE
+		# DO SOMETHING PLEASE
+	except Exception as e:
+		bot.reply_to(msg, 'Пользователя с таким никнеймом нет.')
+
+@bot.message_handler(commands=["link_shikimori"])
+def link_shikimori (msg):
+	bot.send_message(msg.chat.id, "Введите ваш никнейм на <a href='https://shikimori.one'>shikimori</a>", parse_mode='html')
+	bot.register_next_step_handler(msg, process_link_shikimori)
 
 if __name__ == "__main__":
 	bot.infinity_polling()
