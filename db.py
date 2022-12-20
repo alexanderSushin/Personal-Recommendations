@@ -1,10 +1,12 @@
 from psycopg2 import connect, sql
 from dotenv import load_dotenv
 import os
+from user import User
 
+main_file = (__name__ == "__main__")
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env.local')
 if os.path.exists(dotenv_path):
-	if __name__ == "__main__":
+	if main_file:
 		print('loaded')
 	load_dotenv(dotenv_path)
 
@@ -12,13 +14,31 @@ conn = connect(dbname=os.environ.get("POSTGRES_DB"), user=os.environ.get("POSTGR
 	password=os.environ.get("POSTGRES_PASSWORD"), host="localhost")
 cur = conn.cursor()
 
-print('connection successfull')
+if main_file:
+	print('connection successfull')
 
-def getUserById (user_id):
+def insertUser (user: User):
+	try:
+		cur.execute("INSERT INTO users (telegram_id, telegram_chat_id, is_deleted, shikimori) VALUES (%s, %s, %s, %s)", user.exportInsert())
+		conn.commit()
+		return True
+	except Exception as e:
+		print(e)
+		return False
+
+def getUserById (user_id: int) -> User:
 	cur.execute('SELECT * FROM users WHERE id=%s;', [user_id])
 	res = cur.fetchone()
-	conn.commit()
-	return res
+	return User(res)
 
-print(getUser(1))
-conn.close()
+def getUserByTid (telegram_id: int) -> User:
+	cur.execute('SELECT * FROM users WHERE tid=%s;', [telegram_id])
+	res = cur.fetchone()
+	return User(res)
+
+def updateLogin (user: User):
+	cur.execute('UPDATE users SET shikimori=%s WHERE id=%s', [user.login, user.id])
+	conn.commit()
+
+if main_file:
+	conn.close()
